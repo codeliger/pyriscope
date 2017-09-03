@@ -39,7 +39,7 @@ DEFAULT_DL_THREADS = 6
 FFMPEG_NOROT = "ffmpeg -y -v error -i \"{0}.ts\" -bsf:a aac_adtstoasc -codec copy \"{0}.mp4\""
 FFMPEG_ROT ="ffmpeg -y -v error -i \"{0}.ts\" -bsf:a aac_adtstoasc -acodec copy -vf \"transpose=2\" -crf 30 \"{0}.mp4\""
 FFMPEG_LIVE = "ffmpeg -y -v error -headers \"Referer:{}; User-Agent:{}\" -i \"{}\" -c copy{} \"{}.ts\""
-URL_PATTERN = re.compile(r'(http://|https://|)(www.|)(periscope.tv|perisearch.net)/(w|\S+)/(\S+)')
+URL_PATTERN = re.compile(r'(http://|https://|)(www.|)(periscope.tv|perisearch.net|pscp.tv)/(w|\S+)/(\S+)')
 REPLAY_URL = "https://{}/{}/{}"
 REPLAY_PATTERN = re.compile(r'https://(\S*).periscope.tv/(\S*)/(\S*)')
 
@@ -166,14 +166,14 @@ About:
 
 
 def dissect_url(url):
-    match = re.search(URL_PATTERN, url)
+    match =  re.search(URL_PATTERN, url)
     parts = {}
 
     try:
         parts['url'] = match.group(0)
         parts['website'] = match.group(3)
         parts['username'] = match.group(4)
-        parts['token'] = match.group(5)
+        parts['token'] = match.group(5).replace("?","")
 
         if len(parts['token']) < 15:
             parts['broadcast_id'] = parts['token']
